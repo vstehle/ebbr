@@ -240,24 +240,36 @@ applications, must not contain any built-in assumptions that they are to be
 loaded at a given privilege level during boot time since they can, for example,
 legitimately be loaded into either EL1 or EL2 on AArch64 and HS/VS/S mode on RISC-V.
 
-AArch64 Exception Levels
-------------------------
+Arm Exception Levels
+--------------------
 
-On AArch64 UEFI shall execute as A64 code at either EL1 or EL2,
-depending on whether or not virtualization is available at OS load time.
+AArch32
+^^^^^^^
 
-UEFI Boot at EL2
-^^^^^^^^^^^^^^^^
+On AArch32 UEFI shall execute as A32 code (T32 code is also allowed outside of
+UEFI interfaces) at a priviledged mode, as defined in [UEFI]_ § 2.3.5.
+Executing UEFI in Hyp mode with Long-descriptor translation tables is explicitly
+allowed.
 
-Most systems are expected to boot UEFI at EL2, to allow for the installation of
-a hypervisor or a virtualization aware Operating System.
+AArch64
+^^^^^^^
 
-UEFI Boot at EL1
-^^^^^^^^^^^^^^^^
+On AArch64 UEFI shall execute as A64 code at the highest privilege level
+available; EL2 or EL1, as defined in [UEFI]_ § 2.3.6, depending on whether or
+not virtualization is available at OS load time.
 
-Booting of UEFI at EL1 is most likely employed within a hypervisor hosted Guest
-Operating System environment, to allow the subsequent booting of a
-UEFI-compliant Operating System.
+UEFI Boot at Hyp mode or EL2
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Most systems are expected to boot UEFI at Hyp mode or EL2, to allow for the
+installation of a hypervisor or a virtualization aware Operating System.
+
+UEFI Boot at Supervisor mode or EL1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Booting of UEFI at Supervisor mode or EL1 is most likely employed within a
+hypervisor hosted Guest Operating System environment, to allow the subsequent
+booting of a UEFI-compliant Operating System.
 In this instance, the UEFI boot-time environment can be provided, as a
 virtualized service, by the hypervisor and not as part of the host firmware.
 
