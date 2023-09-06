@@ -22,6 +22,11 @@
    <https://developer.arm.com/documentation/ddi0487/ja>`_,
    April 2023, `Arm Limited <https://www.arm.com/>`_
 
+.. [v8-R64] `Arm Architecture Reference Manual Supplement Armv8,
+   for R-profile AArch64 architecture Issue B.a
+   <https://developer.arm.com/documentation/ddi0600/ba>`,
+   June 2022, `Arm Limited <https://www.arm.com/>`_
+
 .. [PSCI] `Arm Power State Coordination Interface issue D.b (PSCI v1.1).
    <https://developer.arm.com/documentation/den0022/db>`_
    June 2021, `Arm Limited <https://www.arm.com/>`_

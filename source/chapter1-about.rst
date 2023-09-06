@@ -223,7 +223,8 @@ Arm
 ---
 
 Refer to the Arm Architecture Reference Manual for A-profile architecture
-[ArmARM]_.
+[ArmARM]_ and to the Arm Architecture Reference Manual Supplement Armv8, for
+R-profile AArch64 architecture [v8-R64]_.
 
 .. glossary::
 
@@ -243,13 +244,15 @@ Refer to the Arm Architecture Reference Manual for A-profile architecture
       pre-Armv8 architectures.
 
    AArch64
-      The Arm 64-bit Execution state, supported by the Armv8-A architecture.
+      The Arm 64-bit Execution state, supported by the Armv8-A and the Armv8-R
+      AArch64 architectures.
       In this state, addresses are held in 64-bit registers, and instructions in
       the base instruction set can use 64-bit registers for their processing.
       This state supports the A64 instruction set.
 
    A64
-      The 32-bit length instruction set, supported by the Armv8-A architecture.
+      The 32-bit length instruction set, supported by the Armv8-A and the
+      Armv8-R AArch64 architectures.
 
    EL0
       The lowest Exception level, used to execute user applications.
@@ -272,6 +275,23 @@ Refer to the Arm Architecture Reference Manual for A-profile architecture
       handles the transitions between Non-secure and Secure states.
       For AArch32 state, the Monitor mode runs at this Exception level.
       In the context of this specification, implies Secure state.
+      For the Armv8-R AArch64 architecture profile, this Exception level does
+      not exist.
+
+   S-EL0
+      The lowest Exception level in Secure state, used to execute applications.
+      In the context of this specification, implies AArch64.
+
+   S-EL1
+      The Exception level in Secure state, used to execute kernels.
+      In the context of this specification, implies AArch64 and virtual memory
+      support.
+
+   S-EL2
+      The Exception level in Secure state, used to execute hypervisor code.
+      In the context of this specification, implies AArch64.
+      For the Armv8-R AArch64 architecture profile, this is the highest
+      Exception level.
 
 RISC-V
 ------

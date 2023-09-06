@@ -24,11 +24,13 @@ conform to the Power State Coordination Interface specification [PSCI]_.
 Platforms without Monitor mode but with Hyp mode should implement PSCI in Hyp
 mode (leaving only Supervisor mode available to an operating system).
 
+.. _section-aarch64-platforms:
+
 AArch64 platforms
 -----------------
 
-On AArch64 platforms, Firmware resident in EL3 must implement and conform to the
-PSCI specification.
+On AArch64 A-profile platforms, Firmware resident in EL3 must implement and
+conform to the PSCI specification.
 
 Platforms without EL3 must implement one of:
 
@@ -38,6 +40,9 @@ Platforms without EL3 must implement one of:
 However, the spin table protocol is strongly discouraged.
 Future versions of this specification will only allow PSCI, and PSCI should
 be implemented in all new designs.
+
+On Armv8-R AArch64 platforms, Firmware and hypervisor resident in S-EL2 must
+implement and conform to the PSCI specification.
 
 RISC-V Multiprocessor Startup Protocol
 ======================================

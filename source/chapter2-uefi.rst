@@ -255,8 +255,19 @@ AArch64
 ^^^^^^^
 
 On AArch64 UEFI shall execute as A64 code at the highest privilege level
-available; EL2 or EL1, as defined in [UEFI]_ § 2.3.6, depending on whether or
-not virtualization is available at OS load time.
+available, as defined in [UEFI]_ § 2.3.6, depending on whether or not
+virtualization is available at OS load time.
+
+- On A-profile platforms this is EL2 or EL1.
+- On Armv8-R AArch64 platforms this is S-EL1 [#SEL1Note]_, and executing UEFI at
+  this level is explicitly allowed.
+
+.. [#SEL1Note] On Armv8-R AArch64 platforms, S-EL2 is used to implement PSCI
+   and virtualization (see section :ref:`section-aarch64-platforms`), and is
+   therefore not available to execute UEFI.
+   While Armv8-R AArch64 S-EL2 might in theory be used for OS based
+   virtualization, it does not support virtual memory but protection regions,
+   which makes it best suited for a Type 1 hypervisor in practice.
 
 UEFI Boot at Hyp mode or EL2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -264,10 +275,10 @@ UEFI Boot at Hyp mode or EL2
 Most systems are expected to boot UEFI at Hyp mode or EL2, to allow for the
 installation of a hypervisor or a virtualization aware Operating System.
 
-UEFI Boot at Supervisor mode or EL1
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UEFI Boot at Supervisor mode or (S-)EL1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Booting of UEFI at Supervisor mode or EL1 is most likely employed within a
+Booting of UEFI at Supervisor mode or (S-)EL1 is most likely employed within a
 hypervisor hosted Guest Operating System environment, to allow the subsequent
 booting of a UEFI-compliant Operating System.
 In this instance, the UEFI boot-time environment can be provided, as a
