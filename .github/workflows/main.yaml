@@ -15,68 +15,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      # checkout@v3 doesn't preserve annotations when fetching the tag
-      # Forcing the tags to be fetched fixes it so the version is correct
-      - name: 'Identify Version'
+      - name: 'Compute IRC message'
+        # We compute a message only in the following cases:
+        # - Push to the main branch
+        # - Pull request opened
         run: |
-          git fetch --force --tags
-          echo "EBBR_VERSION=$(git describe)" >> $GITHUB_ENV
+          case "${{ github.event_name }}" in
+          push)
+            case "${{ github.event.ref }}" in
+            refs/heads/main|refs/tags/*)
+              cat >message <<EOF
+          ${{ github.event.head_commit.message }}
+          EOF
+              title=$(head -1 message)
+              msg="Push ${{ github.event.ref }} (\"$title\")"
+              url="${{ github.event.head_commit.url }}"
+              ;;
+            esac ;;
+          pull_request)
+            if [ "${{ github.event.action }}" == opened ]; then
+              msg="Pull request ${{ github.event.number }}"
+              msg="$msg (\"${{ github.event.pull_request.title }}\")"
+              msg="$msg ${{ github.event.action }}"
+              url="${{ github.event.pull_request.html_url }}"
+            fi ;;
+          esac
 
-      - name: 'Install Debian required packages'
-        run: |
-          sudo apt update
-          sudo apt install python3-pip latexmk libalgorithm-diff-perl texlive \
-            texlive-latex-extra texlive-humanities flake8 mypy yamllint
+          echo "EBBR_IRC_MESSAGE=$msg" >> $GITHUB_ENV
+          echo "EBBR_IRC_URL=$url" >> $GITHUB_ENV
 
-      - name: 'Install Python required packages'
-        run: |
-          pip3 install --user mako
-          pip3 install --user typing
-          pip3 install --user Sphinx
-
-      - name: 'Check'
-        run: make check
-
-      - name: 'Build PDF'
-        run: |
-          make latexpdf
-          cp build/latex/ebbr.pdf build/ebbr-${{ env.EBBR_VERSION }}.pdf
-
-      - name: 'Build HTML'
-        run: make html
-
-      - name: 'Build Single HTML'
-        run: make singlehtml
-
-      - name: 'Build Text'
-        run: make text
-
-      - name: 'Upload artifacts'
-        uses: actions/upload-artifact@v3
+      - name: 'Notify IRC'
+        uses: Gottox/irc-message-action@v2
+        if: ${{ github.repository == 'vstehle/ebbr' &&
+                env.EBBR_IRC_MESSAGE != '' }}
         with:
-          name: ebbr-${{ env.EBBR_VERSION }}
-          path: |
-            build/ebbr-*.pdf
-            build/html/
-            build/singlehtml/
-            build/text/
-
-      - name: 'Deploy to Github Pages'
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/singlehtml
-
-      - name: 'Publish Release'
-        uses: softprops/action-gh-release@v1
-        if: endsWith(github.ref, env.EBBR_VERSION)
-        with:
-          files: build/ebbr-*.pdf
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          server: irc.oftc.net
+          channel: '##vstehle'
+          nickname: ebbr-bot
+          message: |-
+            ${{ env.EBBR_IRC_MESSAGE }}
+            ${{ env.EBBR_IRC_URL }}
