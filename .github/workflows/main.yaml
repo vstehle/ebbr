@@ -86,7 +86,7 @@ jobs:
         # and only in the following cases:
         # - Push of a tag or to the main branch
         # - Pull request opened for the main branch of the main repository.
-        if: ${{ github.repository == 'ARM-software/ebbr' }}
+        if: ${{ github.repository == 'vstehle/ebbr' }}
         run: |
           cat >message <<EOF
           ${{ github.event.head_commit.message }}
@@ -95,7 +95,7 @@ jobs:
           case "${{ github.event_name }}" in
           push)
             case "${{ github.event.ref }}" in
-            refs/heads/main|refs/tags/*)
+            refs/heads/*|refs/tags/*)
               title=$(head -1 message)
               msg="Push ${{ github.event.ref }} (\"$title\")"
               url="${{ github.event.head_commit.url }}"
@@ -120,11 +120,11 @@ jobs:
         uses: Gottox/irc-message-action@v2
         # We notify IRC only for the main repository
         # and when we have computed a message.
-        if: ${{ github.repository == 'ARM-software/ebbr' &&
+        if: ${{ github.repository == 'vstehle/ebbr' &&
                 env.EBBR_IRC_MESSAGE != '' }}
         with:
           server: irc.oftc.net
-          channel: '#ebbr'
+          channel: '##vstehle'
           nickname: ebbr-bot
           message: |-
             ${{ env.EBBR_IRC_MESSAGE }}
