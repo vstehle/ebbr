@@ -1,0 +1,72 @@
+---
+name: 'EBBR CI Build on Mac OS'
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches: '**'
+    tags: 'v*'
+
+  pull_request:
+    branches: main
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        # Make sure we fetch the tags for proper version identification.
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: 'Identify Version'
+        run: |
+          echo "EBBR_VERSION=$(git describe)" >> $GITHUB_ENV
+
+      - name: 'Install Mac OS required packages'
+        run: |
+          brew install --cask mactex
+
+      - name: 'Make sure that our Python folder is in the PATH'
+        run: |
+            v=$(python3 --version |cut -d \  -f 2)
+            v="${v%.*}"
+            echo "PATH=$HOME/Library/Python/$v/bin:$PATH" >> $GITHUB_ENV
+
+      - name: 'Upgrade pip'
+        run: |
+          python3 -m pip install --upgrade --user --break-system-packages pip
+
+      - name: 'Install Python required packages'
+        run: |
+          pip3 install --user --break-system-packages -r requirements.txt
+
+      - name: 'Check'
+        run: make check
+
+      - name: 'Build PDF'
+        run: |
+          make latexpdf
+          cp build/latex/ebbr.pdf build/ebbr-${{ env.EBBR_VERSION }}.pdf
+
+      - name: 'Build HTML'
+        run: make html
+
+      - name: 'Build Single HTML'
+        run: make singlehtml
+
+      - name: 'Build Text'
+        run: make text
+
+      - name: 'Upload Mac OS artifacts'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ebbr-${{ env.EBBR_VERSION }}-macos
+          path: |
+            build/ebbr-*.pdf
+            build/html/
+            build/singlehtml/
+            build/text/
