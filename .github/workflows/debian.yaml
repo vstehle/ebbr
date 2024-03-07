@@ -1,0 +1,75 @@
+---
+name: 'EBBR CI Build on Debian'
+
+# yamllint disable-line rule:truthy
+on: workflow_displatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      # We need to run in a container to have access to a Debian image.
+      image: debian:latest
+
+    steps:
+      - name: 'Install Debian required packages'
+        # Notes:
+        # - Do this before checkout and be sure to install git. This is to have
+        #   git in the path at checkout time, to obtain the .git folder.
+        # - No need to use sudo in the container.
+        run: |
+          apt update
+          apt -y install git python3-pip latexmk libalgorithm-diff-perl \
+            texlive texlive-latex-extra texlive-humanities flake8 mypy yamllint
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        # Make sure we fetch the tags for proper version identification.
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Add git safe directory
+        # We need this workaround in the container as the checkout action does
+        # not run under the same user.
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: 'Identify Version'
+        run: |
+          echo "EBBR_VERSION=$(git describe)" >> $GITHUB_ENV
+
+      - name: 'Add our local bin folder to the PATH'
+        run: |
+          echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
+
+      - name: 'Install Python required packages'
+        run: |
+          pip3 install --user --break-system-packages -r requirements.txt
+
+      - name: 'Check'
+        run: make check
+
+      - name: 'Build PDF'
+        run: |
+          make latexpdf
+          cp build/latex/ebbr.pdf build/ebbr-${{ env.EBBR_VERSION }}.pdf
+
+      - name: 'Build HTML'
+        run: make html
+
+      - name: 'Build Single HTML'
+        run: make singlehtml
+
+      - name: 'Build Text'
+        run: make text
+
+      - name: 'Upload Debian artifacts'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ebbr-${{ env.EBBR_VERSION }}-debian
+          path: |
+            build/ebbr-*.pdf
+            build/html/
+            build/singlehtml/
+            build/text/
