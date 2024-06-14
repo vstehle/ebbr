@@ -26,10 +26,6 @@ jobs:
         run: |
           echo "EBBR_VERSION=$(git describe)" >> $GITHUB_ENV
 
-      - name: 'Install Mac OS required packages'
-        run: |
-          brew install --cask mactex
-
       - name: 'Make sure that our Python folder is in the PATH'
         run: |
             v=$(python3 --version |cut -d \  -f 2)
