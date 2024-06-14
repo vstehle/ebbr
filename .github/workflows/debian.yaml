@@ -2,7 +2,13 @@
 name: 'EBBR CI Build on Debian'
 
 # yamllint disable-line rule:truthy
-on: workflow_displatch
+on:
+  push:
+    branches: '**'
+    tags: 'v*'
+
+  pull_request:
+    branches: main
 
 jobs:
   build:
