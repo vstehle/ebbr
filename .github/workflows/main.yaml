@@ -75,14 +75,12 @@ jobs:
       - name: 'Install Ubuntu required packages'
         run: |
           sudo apt-get update
-          sudo apt-get -y install python3-pip latexmk libalgorithm-diff-perl \
-            texlive texlive-latex-extra texlive-humanities flake8 mypy yamllint
+          sudo apt-get -y install latexmk libalgorithm-diff-perl python3-pip \
+            texlive texlive-humanities texlive-latex-extra
 
       - name: 'Install Python required packages'
         run: |
-          pip3 install --user mako
-          pip3 install --user typing
-          pip3 install --user Sphinx
+          pip3 install --user -r requirements.txt
 
       - name: 'Check'
         run: make check
