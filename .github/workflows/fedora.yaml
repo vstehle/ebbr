@@ -25,8 +25,11 @@ jobs:
         #   git in the path at checkout time, to obtain the .git folder.
         # - No need to use sudo in the container.
         run: |
-          dnf install -y git python3-pip texlive-scheme-full texinfo latexmk \
-            make
+          dnf install -y git python3-pip texlive-scheme-basic texinfo latexmk \
+            make texlive texlive-capt-of texlive-draftwatermark \
+            texlive-fncychap texlive-framed texlive-needspace \
+            texlive-tabulary texlive-titlesec texlive-upquote \
+            texlive-wrapfig texinfo latexmk
 
       - name: Checkout
         uses: actions/checkout@v4
