@@ -202,10 +202,19 @@ Variables as found in :UEFI:`3.3`.
      - An ordered list of boot options.
        Firmware will try `BootNext` and each `Boot####` entry in the
        order given by `BootOrder` to find the first bootable image.
+   * - `CryptoIndicationsSupported`
+     - An `EFI_CRYPTO_INDICATION` structure indicating which crypto algorithms
+       are supported by the firmware.
+       Required if Secure Boot is implemented.
+       TBD: bits
    * - `OsIndications`
      - Method for OS to request features from firmware.
    * - `OsIndicationsSupported`
      - Variable for firmware to indicate which features can be enabled.
+       Required if in-band firmware update is implemented, in which case this
+       variable must have the bits `EFI_OS_INDICATIONS_FMP_CAPSULE_SUPPORTED`
+       and `EFI_OS_INDICATIONS_FILE_CAPSULE_DELIVERY_SUPPORTED` set
+       (see section :ref:`section-fw-update`).
 
 .. _section-required-vars-for-on-disk:
 
@@ -440,7 +449,9 @@ UEFI Secure Boot (Optional)
 UEFI Secure Boot is optional for this specification.
 
 If Secure Boot is implemented, it must conform to the UEFI specification for
-Secure Boot. There are no additional requirements for Secure Boot.
+Secure Boot and the `CryptoIndicationsSupported` variable must be implemented
+(see :ref:`section-required-global-vars`).
+There are no additional requirements for Secure Boot.
 
 UEFI Runtime Services
 =====================
