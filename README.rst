@@ -174,6 +174,27 @@ extension described below instead.
 Make sure that citations labels (such as "DTSPEC" above) have 8 characters
 maximum as this is the limit of the Sphinx LaTeX writer.
 
+Version annotations
+^^^^^^^^^^^^^^^^^^^
+
+When a version annotation applies to a section as a whole, add a single
+directive line at the beginning of the section::
+
+ .. versionadded:: 2.3.0
+
+When the version annotation applies to a single paragraph, add the directive
+line followed by the paragraph as explanation part starting on the next line
+(unlike notes)::
+
+ .. versionchanged:: 2.4.0
+    Text of the requirement
+
+Use whichever form is easier to read, both in term of generated document and
+also in term of sources.
+
+Annotate only changes in requirements; there is no need to annotate changes in
+recommendations.
+
 Sphinx Extensions
 -----------------
 
