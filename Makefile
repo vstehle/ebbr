@@ -24,6 +24,7 @@ check-local:
 	yamllint .
 	flake8 .
 	mypy .
+	pylint .
 
 check: check-local linkcheck
 
