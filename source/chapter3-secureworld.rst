@@ -44,7 +44,8 @@ It is recommended that firmware implements PSCI version 1.0 or later
    It also introduced the `PSCI_FEATURES` function, for standardized discovery.
 
 .. [#SMCCCNote] Starting with SMCCC version 1.1, support for the `SMCCC_VERSION`
-   function is required, for standardized discovery.
+   and for the `SMCCC_ARCH_FEATURES` functions is required, for standardized
+   discovery.
 
 .. warning:: A future version of this specification will require minimum PSCI
    and SMCCC versions.
